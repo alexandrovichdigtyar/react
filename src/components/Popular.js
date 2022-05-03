@@ -19,23 +19,26 @@ class Popular extends React.Component {
     
     fetchHandler(language) {
         fetchPopularRepos(language)
-            .then(data => this.setState({repos: data}))
+            .then(data => {this.setState({repos: data})})
             .catch(error => console.error(error))
     }
 
     selectLanguage(language) {
-        this.setState({selectedLanguage: language});
-        this.fetchHandler(language);
+        if(language !== this.state.selectedLanguage && this.state.repos) {
+            this.setState({selectedLanguage: language, repos: null}); 
+            this.fetchHandler(language);
+        }
     }
 
     render() {
+        console.log("repos") 
         return (
             <div>
                 <SelectedLanguages
                     selectedLanguage={this.state.selectedLanguage}
                     selectLanguageHandler={this.selectLanguage}
                 />
-                {this.state.repos ? <Repos repos={this.state.repos} /> : null}
+                {this.state.repos ? <Repos repos={this.state.repos} /> : <p style={{textAlign: "center"}}>Loading...</p>}
             </div>
         )
     }
